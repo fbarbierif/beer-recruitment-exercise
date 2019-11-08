@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Beer Recruitment Exercise</string>
+    <string name="beers_activity_title">Beers</string>
+    <string name="search">Search…</string>
+    <string name="error">Oops! There was an error, please try again.</string>
+    <string name="empty">No results.</string>
+    <string name="beer_image">Beer image</string>
+    <string name="error_image">Error image</string>
 </resources>
