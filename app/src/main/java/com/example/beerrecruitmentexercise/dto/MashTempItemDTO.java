@@ -4,7 +4,7 @@ import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-class MashTempItemDTO implements RealmModel {
+public class MashTempItemDTO implements RealmModel {
 
     ValueUnitDTO temp;
     private float duration;
@@ -19,6 +19,8 @@ class MashTempItemDTO implements RealmModel {
         this.temp = temp;
         this.duration = duration;
     }
+
+    public MashTempItemDTO(){}
 
     public ValueUnitDTO getTemp() {
         return temp;

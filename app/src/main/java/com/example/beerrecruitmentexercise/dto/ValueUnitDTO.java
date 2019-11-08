@@ -4,7 +4,7 @@ import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-class ValueUnitDTO implements RealmModel {
+public class ValueUnitDTO implements RealmModel {
 
     private float value;
     private String unit;
@@ -19,6 +19,8 @@ class ValueUnitDTO implements RealmModel {
         this.value = value;
         this.unit = unit;
     }
+
+    public ValueUnitDTO(){}
 
     public float getValue() {
         return value;

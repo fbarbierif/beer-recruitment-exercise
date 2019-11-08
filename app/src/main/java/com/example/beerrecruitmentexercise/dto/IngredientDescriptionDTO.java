@@ -4,7 +4,7 @@ import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-class IngredientDescriptionDTO implements RealmModel {
+public class IngredientDescriptionDTO implements RealmModel {
 
     private String name;
     private ValueUnitDTO amount;
@@ -25,6 +25,8 @@ class IngredientDescriptionDTO implements RealmModel {
         this.add = add;
         this.attribute = attribute;
     }
+
+    public IngredientDescriptionDTO(){}
 
     public String getName() {
         return name;

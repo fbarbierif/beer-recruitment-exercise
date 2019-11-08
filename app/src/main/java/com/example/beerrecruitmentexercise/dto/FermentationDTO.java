@@ -4,7 +4,7 @@ import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-class FermentationDTO implements RealmModel {
+public class FermentationDTO implements RealmModel {
 
     private ValueUnitDTO temp;
 
@@ -16,6 +16,8 @@ class FermentationDTO implements RealmModel {
     public FermentationDTO(ValueUnitDTO temp) {
         this.temp = temp;
     }
+
+    public FermentationDTO(){}
 
     public ValueUnitDTO getTemp() {
         return temp;

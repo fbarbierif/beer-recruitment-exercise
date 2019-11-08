@@ -2,8 +2,7 @@ package com.example.beerrecruitmentexercise.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-
+import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 
@@ -35,7 +34,7 @@ public class BeerDTO implements RealmModel {
     private MethodDTO method;
     private IngredientsDTO ingredients;
     @SerializedName("food_pairing")
-    private ArrayList<String> foodPairing;
+    private RealmList<String> foodPairing;
     @SerializedName("brewers_tips")
     private String brewersTips;
     @SerializedName("contributed_by")
@@ -70,7 +69,7 @@ public class BeerDTO implements RealmModel {
                    String imageUrl, float abv, float ibu, float targetFg, float targetOg, float ebc,
                    float srm, float ph, float attenuationLevel, ValueUnitDTO volume,
                    ValueUnitDTO boilVolume, MethodDTO method, IngredientsDTO ingredients,
-                   ArrayList<String> foodPairing, String brewersTips, String contributedBy) {
+                   RealmList<String> foodPairing, String brewersTips, String contributedBy) {
         this.id = id;
         this.name = name;
         this.tagline = tagline;
@@ -89,10 +88,12 @@ public class BeerDTO implements RealmModel {
         this.boilVolume = boilVolume;
         this.method = method;
         this.ingredients = ingredients;
-        this.foodPairing = foodPairing;
+        this.foodPairing= foodPairing;
         this.brewersTips = brewersTips;
         this.contributedBy = contributedBy;
     }
+
+    public BeerDTO(){}
 
     public int getId() {
         return id;
@@ -166,7 +167,7 @@ public class BeerDTO implements RealmModel {
         return ingredients;
     }
 
-    public ArrayList<String> getFoodPairing() {
+    public RealmList<String> getFoodPairing() {
         return foodPairing;
     }
 

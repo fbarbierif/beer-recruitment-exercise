@@ -1,15 +1,14 @@
 package com.example.beerrecruitmentexercise.dto;
 
-import java.util.ArrayList;
-
+import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
-class IngredientsDTO implements RealmModel {
+public class IngredientsDTO implements RealmModel {
 
-    private ArrayList<IngredientDescriptionDTO> malt;
-    private ArrayList<IngredientDescriptionDTO> hops;
+    private RealmList<IngredientDescriptionDTO> malt;
+    private RealmList<IngredientDescriptionDTO> hops;
     private String yeast;
 
     /**
@@ -19,18 +18,20 @@ class IngredientsDTO implements RealmModel {
      * @param hops the hops ingredients
      * @param yeast the yeast
      */
-    public IngredientsDTO(ArrayList<IngredientDescriptionDTO> malt,
-                          ArrayList<IngredientDescriptionDTO> hops, String yeast) {
+    public IngredientsDTO(RealmList<IngredientDescriptionDTO> malt,
+                          RealmList<IngredientDescriptionDTO> hops, String yeast) {
         this.malt = malt;
         this.hops = hops;
         this.yeast = yeast;
     }
 
-    public ArrayList<IngredientDescriptionDTO> getMalt() {
+    public IngredientsDTO(){}
+
+    public RealmList<IngredientDescriptionDTO> getMalt() {
         return malt;
     }
 
-    public ArrayList<IngredientDescriptionDTO> getHops() {
+    public RealmList<IngredientDescriptionDTO> getHops() {
         return hops;
     }
 
