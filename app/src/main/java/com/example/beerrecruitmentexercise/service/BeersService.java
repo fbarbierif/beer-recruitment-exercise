@@ -16,5 +16,6 @@ public interface BeersService {
      * @return the beers list
      */
     @GET(URL_BEERS)
-    Observable<ArrayList<BeerDTO>> getBeersData();
+    Observable<ArrayList<BeerDTO>> getBeersData(@Query("page") String page,
+                                                @Query("food") String food);
 }

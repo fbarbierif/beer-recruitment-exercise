@@ -36,8 +36,8 @@ public class BeersModel {
      *
      * @return the response containing the beers
      */
-    public Observable<ArrayList<BeerDTO>> getBeersData() {
-        return getService().getBeersData();
+    public Observable<ArrayList<BeerDTO>> getBeersData(final String page, final String food) {
+        return getService().getBeersData(page, food);
     }
 
 }

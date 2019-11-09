@@ -22,12 +22,15 @@ public class BeersAdapter extends RecyclerView.Adapter<BeersAdapter.BeersViewHol
 
     static class BeersViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvName;
+        TextView tvName, tvTagline, tvDescription, tvABV;
         SimpleDraweeView imageView;
 
         BeersViewHolder(final View view) {
             super(view);
             tvName = view.findViewById(R.id.tvName);
+            tvTagline = view.findViewById(R.id.tvTagline);
+            tvDescription = view.findViewById(R.id.tvDescription);
+            tvABV = view.findViewById(R.id.tvABV);
             imageView = view.findViewById(R.id.imageView);
         }
     }
@@ -49,6 +52,10 @@ public class BeersAdapter extends RecyclerView.Adapter<BeersAdapter.BeersViewHol
     public void onBindViewHolder(@NonNull BeersViewHolder holder, int position) {
 
         holder.tvName.setText(beersList.get(position).getName());
+        holder.tvTagline.setText(beersList.get(position).getTagline());
+        holder.tvDescription.setText(beersList.get(position).getDescription());
+        holder.tvABV.setText(new StringBuilder().append("ABV: ").append(beersList.get(position).getAbv()).append(" %").toString());
+
         holder.imageView.setImageURI(beersList.get(position).getImageUrl());
     }
 

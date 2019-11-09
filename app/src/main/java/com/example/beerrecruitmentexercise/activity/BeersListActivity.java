@@ -7,6 +7,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -23,13 +24,19 @@ import com.example.beerrecruitmentexercise.presenter.BeersPresenter;
 import com.example.beerrecruitmentexercise.view.BeersView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class BeersListActivity extends AppCompatActivity implements BeersView {
 
     private BeersPresenter beersPresenter;
     private BeersAdapter beersAdapter;
     RecyclerView recyclerView;
-    private LinearLayoutManager layoutManager;
     private ProgressBar progressBar;
     private LinearLayout llErrorEmptyView;
     private TextView tvMessage;
@@ -39,6 +46,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     final ArrayList<BeerDTO> beers = new ArrayList<>();
 
     public static final String EMPTY = "";
+    public static final String ASCENDING = "ascending";
+    public static final String DESCENDING = "descending";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +64,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         srLayout = findViewById(R.id.swipeRefreshLt);
 
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         beersPresenter = new BeersPresenter(this);
@@ -63,7 +73,8 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
             @Override
             public void onRefresh() {
                 beers.clear();
-                beersPresenter.getBeersData();
+                srLayout.setRefreshing(true);
+                beersPresenter.getBeersData(String.valueOf(1), null);
             }
         });
 
@@ -88,7 +99,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         super.onResume();
 
         showProgressBar();
-        beersPresenter.getBeersData();
+        beersPresenter.getBeersData(String.valueOf(1), null);
     }
 
     private void hideKeyboard() {
@@ -98,7 +109,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         if (view == null) {
             view = new View(this);
         }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -106,6 +119,10 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         recyclerView.setVisibility(View.VISIBLE);
         hideKeyboard();
         llErrorEmptyView.setVisibility(View.GONE);
+
+        sortBeersAscending(beersResult);
+
+        beers.clear();
         beers.addAll(beersResult);
 
         if (beersAdapter == null) {
@@ -117,6 +134,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
         srLayout.setRefreshing(false);
         hideProgressBar();
+
+        deleteAllFromRealm();
+        storeBeers(beersResult);
     }
 
     @Override
@@ -142,7 +162,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     private void showErrorEmptyLayout(final String message) {
         recyclerView.setVisibility(View.GONE);
         hideKeyboard();
-        beersAdapter.notifyDataSetChanged();
+        if(beersAdapter != null ){
+            beersAdapter.notifyDataSetChanged();
+        }
         srLayout.setRefreshing(false);
         tvMessage.setText(message);
         llErrorEmptyView.setVisibility(View.VISIBLE);
@@ -154,6 +176,63 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         etSearch.setText(EMPTY);
         hideKeyboard();
         showProgressBar();
-        beersPresenter.getBeersData();
+        beersPresenter.getBeersData(String.valueOf(1), null);
+    }
+
+    private void sortBeersAscending(ArrayList<BeerDTO> beersResult) {
+        Collections.sort(beersResult, new Comparator<BeerDTO>() {
+            @Override
+            public int compare(BeerDTO beer1, BeerDTO beer2) {
+                return Float.compare(beer1.getAbv(), beer2.getAbv());
+            }
+        });
+    }
+
+    private void deleteAllFromRealm() {
+
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.delete(BeerDTO.class);
+            }
+        });
+    }
+
+    private void sortStoredBeersByABV(final String order) {
+
+        Sort realmOrder;
+        if(ASCENDING.equalsIgnoreCase(order)){
+            realmOrder = Sort.ASCENDING;
+        }else{
+            realmOrder = Sort.DESCENDING;
+        }
+
+        final Realm realm = Realm.getDefaultInstance();
+        RealmResults<BeerDTO> beersSorted = realm.where(BeerDTO.class)
+                              .sort("abv", realmOrder)
+                              .findAll();
+
+        final ArrayList<BeerDTO> beers = new ArrayList<>();
+        beers.addAll(realm.copyFromRealm(beersSorted));
+
+        showBeersData(beers);
+
+        realm.close();
+    }
+
+    public void storeBeers(final ArrayList<BeerDTO> beersList) {
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmList<BeerDTO> beersListToStore = new RealmList<>();
+                    beersListToStore.addAll(beersList);
+                    realm.insertOrUpdate(beersListToStore);
+                }
+            });
+        } catch (Exception e){
+            Log.d("Realm error", e.getMessage());
+        }
     }
 }

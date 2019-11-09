@@ -16,17 +16,17 @@ import rx.schedulers.Schedulers;
 
 public class BeersPresenter {
 
-    final BeersView beersView;
+    private final BeersView beersView;
     private static final String REQUEST_ERROR = "Request error";
 
     public BeersPresenter(final BeersView view) {
         beersView = view;
     }
 
-    public void getBeersData() {
+    public void getBeersData(final String page, final String food) {
 
         final Observable<ArrayList<BeerDTO>> observable =
-                BeersModel.getInstance().getBeersData();
+                BeersModel.getInstance().getBeersData(page, food);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
