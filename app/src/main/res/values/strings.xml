@@ -7,5 +7,5 @@
     <string name="beer_image">Beer image</string>
     <string name="error_image">Error image</string>
     <string name="ascending_abv">Ascending ABV</string>
-    <string name="desscending_abv">Descending ABV</string>
+    <string name="descending_abv">Descending ABV</string>
 </resources>

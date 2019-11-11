@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".activity.BeersListActivity">
 
     <LinearLayout
@@ -19,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:padding="10dp"
+            android:padding="@dimen/dimen_10"
             android:orientation="horizontal">
 
             <EditText
@@ -36,16 +37,16 @@
                 android:singleLine="true"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="@dimen/dimen_20"
+                android:layout_marginEnd="@dimen/dimen_10"
                 android:importantForAutofill="no">
             </EditText>
 
             <ImageView
                 android:id="@+id/ivClear"
                 android:visibility="invisible"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/dimen_35"
+                android:layout_height="@dimen/dimen_35"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/clear"
@@ -90,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp"
+        android:padding="@dimen/dimen_20"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -103,7 +104,7 @@
             android:src="@drawable/error"
             android:layout_gravity="center"
             android:tint="@color/colorPrimaryDark"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/dimen_20"
             android:contentDescription="@string/error_image">
         </ImageView>
 
@@ -111,7 +112,7 @@
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="@dimen/dimen_18_sp"
             android:layout_gravity="center"
             android:textColor="@color/colorPrimaryDark">
         </TextView>

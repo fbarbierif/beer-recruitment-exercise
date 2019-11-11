@@ -5,9 +5,8 @@
         android:id="@+id/menu_sort_ascending"
         app:showAsAction="never"
         android:title="@string/ascending_abv"/>
-
     <item
         android:id="@+id/menu_sort_descending"
         app:showAsAction="never"
-        android:title="@string/desscending_abv"/>
+        android:title="@string/descending_abv"/>
 </menu>
