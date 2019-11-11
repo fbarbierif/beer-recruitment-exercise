@@ -1,6 +1,5 @@
 package com.example.beerrecruitmentexercise.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,10 @@ import java.util.ArrayList;
 public class BeersAdapter extends RecyclerView.Adapter<BeersAdapter.BeersViewHolder> {
 
     private final ArrayList<BeerDTO> beersList;
-    private Context context;
 
+    /**
+     * Beers viewholder, view to show item in recyclerview
+     */
     static class BeersViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvName, tvTagline, tvDescription, tvABV;
@@ -35,9 +36,13 @@ public class BeersAdapter extends RecyclerView.Adapter<BeersAdapter.BeersViewHol
         }
     }
 
-    public BeersAdapter(final ArrayList<BeerDTO> beers, final Context context) {
+    /**
+     * Constructor for beers adapter
+     *
+     * @param beers the list of beers to display
+     */
+    public BeersAdapter(final ArrayList<BeerDTO> beers) {
         this.beersList = beers;
-        this.context = context;
     }
 
     @NonNull

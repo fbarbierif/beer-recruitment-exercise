@@ -17,7 +17,8 @@ public class FermentationDTO implements RealmModel {
         this.temp = temp;
     }
 
-    public FermentationDTO(){}
+    public FermentationDTO() {
+    }
 
     public ValueUnitDTO getTemp() {
         return temp;

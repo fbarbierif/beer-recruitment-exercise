@@ -1,12 +1,6 @@
 package com.example.beerrecruitmentexercise.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.beerrecruitmentexercise.R;
 import com.example.beerrecruitmentexercise.adapter.BeersAdapter;
@@ -52,7 +51,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     final ArrayList<BeerDTO> beers = new ArrayList<>();
     String food = null;
     private EndlessRecyclerViewScrollListener listener;
-    
+
     private static final int FIRST_PAGE = 1;
     public static final String EMPTY = "";
     public static final String ASCENDING = "ascending";
@@ -77,12 +76,12 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         recyclerView.setLayoutManager(layoutManager);
 
         beersPresenter = new BeersPresenter(this);
-        
+
         listener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(final int page, final int totalItemsCount,
                                    final RecyclerView recyclerView) {
-                if(food == null){
+                if (food == null) {
                     beersPresenter.getBeersData(String.valueOf(page), food);
                 }
             }
@@ -106,7 +105,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     food = getFoodFormatted(etSearch.getText().toString());
-                    if(!food.isEmpty()){
+                    if (!food.isEmpty()) {
                         beers.clear();
                         food = getFoodFormatted(etSearch.getText().toString());
                         ivClear.setVisibility(View.VISIBLE);
@@ -126,45 +125,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 resetSearch();
             }
         });
-    }
-
-    private void searchInDBorAPI(final String food) {
-
-        if(isSearchStoredInDB(food)){
-            restoreSearchFromDB(food);
-        }else{
-            beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
-        }
-
-    }
-
-    private void restoreSearchFromDB(final String food) {
-        final Realm realm = Realm.getDefaultInstance();
-        SearchDTO search = realm.where(SearchDTO.class)
-                .equalTo("key", food)
-                .findFirst();
-
-        beers.clear();
-
-        ArrayList<BeerDTO> restoredBeers = new ArrayList<>();
-        restoredBeers.addAll(search.getBeers());
-        showBeers(restoredBeers);
-
-    }
-
-    private boolean isSearchStoredInDB(final String food) {
-        final Realm realm = Realm.getDefaultInstance();
-        SearchDTO search = realm.where(SearchDTO.class)
-                .equalTo("key", food)
-                .findFirst();
-
-        return search != null;
-    }
-
-    private String getFoodFormatted(String food) {
-        final String formattedFood;
-        formattedFood = food.trim().replace(" ", "_");
-        return formattedFood.toLowerCase();
     }
 
     @Override
@@ -201,6 +161,69 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         return true;
     }
 
+    /**
+     * Search by key if object was stored in db and get it or make api call if necesary
+     *
+     * @param food the string as key to search object
+     */
+    private void searchInDBorAPI(final String food) {
+
+        if (isSearchStoredInDB(food)) {
+            restoreSearchFromDB(food);
+        } else {
+            beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
+        }
+
+    }
+
+    /**
+     * Retrieve the object stores in db by the key
+     *
+     * @param food the string as key to search object
+     */
+    private void restoreSearchFromDB(final String food) {
+        final Realm realm = Realm.getDefaultInstance();
+        SearchDTO search = realm.where(SearchDTO.class)
+                .equalTo("key", food)
+                .findFirst();
+
+        beers.clear();
+
+        ArrayList<BeerDTO> restoredBeers = new ArrayList<>();
+        restoredBeers.addAll(search.getBeers());
+        showBeers(restoredBeers);
+
+    }
+
+    /**
+     * Search by key if object was stored in db or not
+     *
+     * @param food the string as key to search object
+     */
+    private boolean isSearchStoredInDB(final String food) {
+        final Realm realm = Realm.getDefaultInstance();
+        SearchDTO search = realm.where(SearchDTO.class)
+                .equalTo("key", food)
+                .findFirst();
+
+        return search != null;
+    }
+
+    /**
+     * Format the search string to use it correctly
+     *
+     * @param food the string to format
+     * @return the formatted string
+     */
+    private String getFoodFormatted(String food) {
+        final String formattedFood;
+        formattedFood = food.trim().replace(" ", "_");
+        return formattedFood.toLowerCase();
+    }
+
+    /**
+     * Hide the soft keyboard
+     */
     private void hideKeyboard() {
         final InputMethodManager imm =
                 (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -213,6 +236,11 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         }
     }
 
+    /**
+     * Sort and show the data
+     *
+     * @param beersResult the data received
+     */
     @Override
     public void sortAndShowBeersData(ArrayList<BeerDTO> beersResult) {
         recyclerView.setVisibility(View.VISIBLE);
@@ -224,11 +252,16 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         showBeers(beersResult);
     }
 
-    private void showBeers(ArrayList<BeerDTO> beersResult){
+    /**
+     * Display beers in recyclerview
+     *
+     * @param beersResult the data to display
+     */
+    private void showBeers(ArrayList<BeerDTO> beersResult) {
         beers.addAll(beersResult);
 
         if (beersAdapter == null) {
-            beersAdapter = new BeersAdapter(beers, getApplicationContext());
+            beersAdapter = new BeersAdapter(beers);
             recyclerView.setAdapter(beersAdapter);
         } else {
             beersAdapter.notifyDataSetChanged();
@@ -239,7 +272,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
         deleteAllFromRealm();
 
-        if(food != null){
+        if (food != null) {
             storeBeersByKey(beersResult);
         } else {
             storeBeers(beersResult);
@@ -266,10 +299,15 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         showErrorEmptyLayout(getString(R.string.empty));
     }
 
+    /**
+     * Show error or empty view
+     *
+     * @param message the message to display
+     */
     private void showErrorEmptyLayout(final String message) {
         recyclerView.setVisibility(View.GONE);
         hideKeyboard();
-        if(beersAdapter != null ){
+        if (beersAdapter != null) {
             beersAdapter.notifyDataSetChanged();
         }
         srLayout.setRefreshing(false);
@@ -277,6 +315,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         llErrorEmptyView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Reset search box and make request to show initial data
+     */
     public void resetSearch() {
         ivClear.setVisibility(View.INVISIBLE);
         food = null;
@@ -288,6 +329,11 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
     }
 
+    /**
+     * Sort initial beers data ascending
+     *
+     * @param beersResult the beers to order
+     */
     private void sortBeersAscending(ArrayList<BeerDTO> beersResult) {
         Collections.sort(beersResult, new Comparator<BeerDTO>() {
             @Override
@@ -297,6 +343,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         });
     }
 
+    /**
+     * Delete all stored beers in db
+     */
     private void deleteAllFromRealm() {
 
         final Realm realm = Realm.getDefaultInstance();
@@ -308,19 +357,24 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         });
     }
 
+    /**
+     * Sort the stored beers by param (ascending/descending)
+     *
+     * @param order the order to sort
+     */
     private void sortStoredBeersByABV(final String order) {
 
         Sort realmOrder;
-        if(ASCENDING.equalsIgnoreCase(order)){
+        if (ASCENDING.equalsIgnoreCase(order)) {
             realmOrder = Sort.ASCENDING;
-        }else{
+        } else {
             realmOrder = Sort.DESCENDING;
         }
 
         final Realm realm = Realm.getDefaultInstance();
         RealmResults<BeerDTO> beersSorted = realm.where(BeerDTO.class)
-                              .sort("abv", realmOrder)
-                              .findAll();
+                .sort("abv", realmOrder)
+                .findAll();
 
         final ArrayList<BeerDTO> beersList = new ArrayList<>();
 
@@ -332,8 +386,13 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         realm.close();
     }
 
+    /**
+     * Store beers in db
+     *
+     * @param beersList the beers to store
+     */
     public void storeBeers(final ArrayList<BeerDTO> beersList) {
-        try(Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -342,13 +401,18 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                     realm.insertOrUpdate(beersListToStore);
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d("Realm error", e.getMessage());
         }
     }
 
+    /**
+     * Store searched object (key/beers)
+     *
+     * @param beersList the beers to store
+     */
     public void storeBeersByKey(final ArrayList<BeerDTO> beersList) {
-        try(Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -358,7 +422,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                     realm.insertOrUpdate(searchObject);
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d("Realm error", e.getMessage());
         }
     }

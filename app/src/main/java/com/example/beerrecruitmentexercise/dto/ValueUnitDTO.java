@@ -13,14 +13,15 @@ public class ValueUnitDTO implements RealmModel {
      * ValueUnit constructor
      *
      * @param value the value
-     * @param unit the unit of the value
+     * @param unit  the unit of the value
      */
     public ValueUnitDTO(float value, String unit) {
         this.value = value;
         this.unit = unit;
     }
 
-    public ValueUnitDTO(){}
+    public ValueUnitDTO() {
+    }
 
     public float getValue() {
         return value;

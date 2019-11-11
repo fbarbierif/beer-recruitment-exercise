@@ -43,27 +43,27 @@ public class BeerDTO implements RealmModel {
     /**
      * Beer constructor
      *
-     * @param id the beer id
-     * @param name the beer name
-     * @param tagline the beer tagline
-     * @param firstBrewed the beer first brewed date
-     * @param description the beer description
-     * @param imageUrl the beer image to show
-     * @param abv the beer abv
-     * @param ibu the beer ibu
-     * @param targetFg the beer target Fg
-     * @param targetOg the beer target Og
-     * @param ebc the beer ebc
-     * @param srm the beer srm
-     * @param ph the beer ph
+     * @param id               the beer id
+     * @param name             the beer name
+     * @param tagline          the beer tagline
+     * @param firstBrewed      the beer first brewed date
+     * @param description      the beer description
+     * @param imageUrl         the beer image to show
+     * @param abv              the beer abv
+     * @param ibu              the beer ibu
+     * @param targetFg         the beer target Fg
+     * @param targetOg         the beer target Og
+     * @param ebc              the beer ebc
+     * @param srm              the beer srm
+     * @param ph               the beer ph
      * @param attenuationLevel the beer attenuation level
-     * @param volume the beer volume
-     * @param boilVolume the beer boil volume
-     * @param method the beer production method
-     * @param ingredients the beer ingredients
-     * @param foodPairing the beer food pairing
-     * @param brewersTips the brewer tips
-     * @param contributedBy the contribution to the beer
+     * @param volume           the beer volume
+     * @param boilVolume       the beer boil volume
+     * @param method           the beer production method
+     * @param ingredients      the beer ingredients
+     * @param foodPairing      the beer food pairing
+     * @param brewersTips      the brewer tips
+     * @param contributedBy    the contribution to the beer
      */
     public BeerDTO(int id, String name, String tagline, String firstBrewed, String description,
                    String imageUrl, float abv, float ibu, float targetFg, float targetOg, float ebc,
@@ -88,12 +88,13 @@ public class BeerDTO implements RealmModel {
         this.boilVolume = boilVolume;
         this.method = method;
         this.ingredients = ingredients;
-        this.foodPairing= foodPairing;
+        this.foodPairing = foodPairing;
         this.brewersTips = brewersTips;
         this.contributedBy = contributedBy;
     }
 
-    public BeerDTO(){}
+    public BeerDTO() {
+    }
 
     public int getId() {
         return id;

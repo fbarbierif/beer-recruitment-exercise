@@ -17,9 +17,9 @@ public class MethodDTO implements RealmModel {
     /**
      * Method constructor
      *
-     * @param mashTemp the mash temp
+     * @param mashTemp     the mash temp
      * @param fermentation the fermentation
-     * @param twist the twist
+     * @param twist        the twist
      */
     public MethodDTO(RealmList<MashTempDTO> mashTemp, FermentationDTO fermentation, String twist) {
         this.mashTemp = mashTemp;
@@ -27,7 +27,8 @@ public class MethodDTO implements RealmModel {
         this.twist = twist;
     }
 
-    public MethodDTO(){}
+    public MethodDTO() {
+    }
 
     public RealmList<MashTempDTO> getMashTemp() {
         return mashTemp;

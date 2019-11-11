@@ -14,8 +14,8 @@ public class IngredientsDTO implements RealmModel {
     /**
      * Ingredients constructor
      *
-     * @param malt the malt ingredients
-     * @param hops the hops ingredients
+     * @param malt  the malt ingredients
+     * @param hops  the hops ingredients
      * @param yeast the yeast
      */
     public IngredientsDTO(RealmList<IngredientDescriptionDTO> malt,
@@ -25,7 +25,8 @@ public class IngredientsDTO implements RealmModel {
         this.yeast = yeast;
     }
 
-    public IngredientsDTO(){}
+    public IngredientsDTO() {
+    }
 
     public RealmList<IngredientDescriptionDTO> getMalt() {
         return malt;

@@ -13,8 +13,10 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //Initialize fresco, used to show images.
         Fresco.initialize(this);
 
+        //Initialize realm, used to store and retrieve data from device db.
         Realm.init(this);
         final RealmConfiguration config = new RealmConfiguration
                 .Builder()

@@ -13,6 +13,8 @@ public interface BeersService {
     String URL_BEERS = "/v2/beers";
 
     /**
+     * Methos to GET the data from API
+     *
      * @return the beers list
      */
     @GET(URL_BEERS)

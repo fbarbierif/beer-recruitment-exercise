@@ -13,6 +13,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     private final int startingPageIndex = 1;
     private final RecyclerView.LayoutManager mLayoutManager;
 
+    /**
+     * Endless recyclerview listene cconstructor.
+     *
+     * @param layoutManager the layoutmanager of the view
+     */
     protected EndlessRecyclerViewScrollListener(final LinearLayoutManager layoutManager) {
         mLayoutManager = layoutManager;
     }
@@ -23,7 +28,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         final int totalItemCount = mLayoutManager.getItemCount();
 
         lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager)
-            .findLastVisibleItemPosition();
+                .findLastVisibleItemPosition();
 
         if (totalItemCount < previousTotalItemCount) {
             currentPage = startingPageIndex;

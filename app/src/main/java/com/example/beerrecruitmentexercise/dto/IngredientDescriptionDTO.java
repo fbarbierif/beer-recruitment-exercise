@@ -14,9 +14,9 @@ public class IngredientDescriptionDTO implements RealmModel {
     /**
      * Ingredients description constructor
      *
-     * @param name the ingredient name
-     * @param amount the ingredient amount
-     * @param add the ingredient add
+     * @param name      the ingredient name
+     * @param amount    the ingredient amount
+     * @param add       the ingredient add
      * @param attribute the ingredient attribute
      */
     public IngredientDescriptionDTO(String name, ValueUnitDTO amount, String add, String attribute) {
@@ -26,7 +26,8 @@ public class IngredientDescriptionDTO implements RealmModel {
         this.attribute = attribute;
     }
 
-    public IngredientDescriptionDTO(){}
+    public IngredientDescriptionDTO() {
+    }
 
     public String getName() {
         return name;

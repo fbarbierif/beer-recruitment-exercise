@@ -24,6 +24,11 @@ public class BeersModel {
         return INSTANCE;
     }
 
+    /**
+     * Instance Retrofit and create service to communicate with API
+     *
+     * @return the service created.
+     */
     private BeersService getService() {
         final Retrofit.Builder retrofitBuilder = new Retrofit.Builder().baseUrl(BASE_URL);
         retrofitBuilder.addConverterFactory(GsonConverterFactory.create());

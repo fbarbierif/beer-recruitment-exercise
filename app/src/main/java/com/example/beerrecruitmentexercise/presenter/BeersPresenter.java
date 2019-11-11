@@ -19,10 +19,21 @@ public class BeersPresenter {
     private final BeersView beersView;
     private static final String REQUEST_ERROR = "Request error";
 
+    /**
+     * Presenter constructor
+     *
+     * @param view the view interface to communicate with the activity
+     */
     public BeersPresenter(final BeersView view) {
         beersView = view;
     }
 
+    /**
+     * Begins de API call to get the beers data
+     *
+     * @param page the number of the page to request
+     * @param food the string (if user searched) or null
+     */
     public void getBeersData(final String page, final String food) {
 
         final Observable<ArrayList<BeerDTO>> observable =

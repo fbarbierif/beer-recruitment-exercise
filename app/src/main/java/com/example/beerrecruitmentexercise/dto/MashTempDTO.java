@@ -2,7 +2,6 @@ package com.example.beerrecruitmentexercise.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-
 import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
@@ -22,7 +21,8 @@ public class MashTempDTO implements RealmModel {
         this.mashTemp = mashTemp;
     }
 
-    public MashTempDTO(){}
+    public MashTempDTO() {
+    }
 
     public RealmList<MashTempItemDTO> getMashTemp() {
         return mashTemp;

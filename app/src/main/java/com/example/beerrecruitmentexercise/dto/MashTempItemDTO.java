@@ -12,7 +12,7 @@ public class MashTempItemDTO implements RealmModel {
     /**
      * Constructor
      *
-     * @param temp the mash item temperature
+     * @param temp     the mash item temperature
      * @param duration the mash item duration
      */
     public MashTempItemDTO(ValueUnitDTO temp, float duration) {
@@ -20,7 +20,8 @@ public class MashTempItemDTO implements RealmModel {
         this.duration = duration;
     }
 
-    public MashTempItemDTO(){}
+    public MashTempItemDTO() {
+    }
 
     public ValueUnitDTO getTemp() {
         return temp;

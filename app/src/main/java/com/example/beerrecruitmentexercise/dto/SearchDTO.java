@@ -1,7 +1,5 @@
 package com.example.beerrecruitmentexercise.dto;
 
-import java.util.ArrayList;
-
 import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
@@ -15,7 +13,7 @@ public class SearchDTO implements RealmModel {
     /**
      * Beer search result constructor
      *
-     * @param key the key of the search
+     * @param key   the key of the search
      * @param beers the list of beers
      */
     public SearchDTO(String key, RealmList<BeerDTO> beers) {
@@ -23,7 +21,8 @@ public class SearchDTO implements RealmModel {
         this.beers = beers;
     }
 
-    public SearchDTO(){}
+    public SearchDTO() {
+    }
 
     public String getKey() {
         return key;
