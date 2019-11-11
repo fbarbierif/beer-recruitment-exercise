@@ -49,7 +49,7 @@ public class BeersPresenter {
                             beersView.hideProgressBar();
                             beersView.showEmptyView();
                         } else {
-                            beersView.showBeersData(result);
+                            beersView.sortAndShowBeersData(result);
                         }
                     }
                 });

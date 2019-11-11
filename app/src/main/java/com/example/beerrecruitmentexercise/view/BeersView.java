@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface BeersView {
 
-    void showBeersData(ArrayList<BeerDTO> beers);
+    void sortAndShowBeersData(ArrayList<BeerDTO> beers);
 
     void showProgressBar();
 
