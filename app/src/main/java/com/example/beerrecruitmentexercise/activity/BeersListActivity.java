@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.example.beerrecruitmentexercise.R;
 import com.example.beerrecruitmentexercise.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.dto.BeerDTO;
+import com.example.beerrecruitmentexercise.dto.SearchDTO;
 import com.example.beerrecruitmentexercise.presenter.BeersPresenter;
 import com.example.beerrecruitmentexercise.utils.EndlessRecyclerViewScrollListener;
 import com.example.beerrecruitmentexercise.view.BeersView;
@@ -81,7 +82,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
             @Override
             public void onLoadMore(final int page, final int totalItemsCount,
                                    final RecyclerView recyclerView) {
-                beersPresenter.getBeersData(String.valueOf(page), food);
+                if(food == null){
+                    beersPresenter.getBeersData(String.valueOf(page), food);
+                }
             }
         };
 
@@ -106,8 +109,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                     if(!food.isEmpty()){
                         beers.clear();
                         food = getFoodFormatted(etSearch.getText().toString());
-                        beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
                         ivClear.setVisibility(View.VISIBLE);
+
+                        searchInDBorAPI(food);
                     }
                     hideKeyboard();
                     return true;
@@ -122,6 +126,39 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 resetSearch();
             }
         });
+    }
+
+    private void searchInDBorAPI(final String food) {
+
+        if(isSearchStoredInDB(food)){
+            restoreSearchFromDB(food);
+        }else{
+            beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
+        }
+
+    }
+
+    private void restoreSearchFromDB(final String food) {
+        final Realm realm = Realm.getDefaultInstance();
+        SearchDTO search = realm.where(SearchDTO.class)
+                .equalTo("key", food)
+                .findFirst();
+
+        beers.clear();
+
+        ArrayList<BeerDTO> restoredBeers = new ArrayList<>();
+        restoredBeers.addAll(search.getBeers());
+        showBeers(restoredBeers);
+
+    }
+
+    private boolean isSearchStoredInDB(final String food) {
+        final Realm realm = Realm.getDefaultInstance();
+        SearchDTO search = realm.where(SearchDTO.class)
+                .equalTo("key", food)
+                .findFirst();
+
+        return search != null;
     }
 
     private String getFoodFormatted(String food) {
@@ -201,7 +238,12 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         hideProgressBar();
 
         deleteAllFromRealm();
-        storeBeers(beersResult);
+
+        if(food != null){
+            storeBeersByKey(beersResult);
+        } else {
+            storeBeers(beersResult);
+        }
     }
 
     @Override
@@ -298,6 +340,22 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                     RealmList<BeerDTO> beersListToStore = new RealmList<>();
                     beersListToStore.addAll(beersList);
                     realm.insertOrUpdate(beersListToStore);
+                }
+            });
+        } catch (Exception e){
+            Log.d("Realm error", e.getMessage());
+        }
+    }
+
+    public void storeBeersByKey(final ArrayList<BeerDTO> beersList) {
+        try(Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmList<BeerDTO> beersListToStore = new RealmList<>();
+                    beersListToStore.addAll(beersList);
+                    SearchDTO searchObject = new SearchDTO(food, beersListToStore);
+                    realm.insertOrUpdate(searchObject);
                 }
             });
         } catch (Exception e){
