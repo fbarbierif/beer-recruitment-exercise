@@ -143,7 +143,7 @@ public abstract class RealmUtils {
                 .findAll();
 
         ArrayList<BeerDTO> results = new ArrayList<>();
-        results.addAll(search);
+        results.addAll(realm.copyFromRealm(search));
 
         realm.close();
         return results;
