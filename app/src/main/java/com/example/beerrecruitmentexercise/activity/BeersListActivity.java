@@ -2,7 +2,6 @@ package com.example.beerrecruitmentexercise.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +22,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.beerrecruitmentexercise.R;
 import com.example.beerrecruitmentexercise.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.dto.BeerDTO;
-import com.example.beerrecruitmentexercise.dto.SearchDTO;
 import com.example.beerrecruitmentexercise.presenter.BeersPresenter;
 import com.example.beerrecruitmentexercise.utils.EndlessRecyclerViewScrollListener;
 import com.example.beerrecruitmentexercise.view.BeersView;
@@ -32,10 +30,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
-import io.realm.Sort;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.deleteAllFromRealm;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.isSearchStoredInDB;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.restoreSearchFromDB;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.sortStoredBeersByABV;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.storeBeers;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.storeBeersByKey;
 
 public class BeersListActivity extends AppCompatActivity implements BeersView {
 
@@ -54,6 +54,8 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
     private static final int FIRST_PAGE = 1;
     public static final String EMPTY = "";
+    public static final String SPACE = " ";
+    public static final String UNDERSCORE = "_";
     public static final String ASCENDING = "ascending";
     public static final String DESCENDING = "descending";
 
@@ -72,6 +74,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         srLayout = findViewById(R.id.swipeRefreshLt);
 
         recyclerView.setHasFixedSize(true);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -92,8 +95,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                beers.clear();
-                srLayout.setRefreshing(true);
+                resetSearch();
                 beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
                 recyclerView.addOnScrollListener(listener);
             }
@@ -107,9 +109,8 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                     food = getFoodFormatted(etSearch.getText().toString());
                     if (!food.isEmpty()) {
                         beers.clear();
-                        food = getFoodFormatted(etSearch.getText().toString());
                         ivClear.setVisibility(View.VISIBLE);
-
+                        food = getFoodFormatted(etSearch.getText().toString());
                         searchInDBorAPI(food);
                     }
                     hideKeyboard();
@@ -129,8 +130,10 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
     @Override
     public void onBackPressed() {
-        if (!food.isEmpty()) {
-            resetSearch();
+        if (food != null) {
+            if(!food.isEmpty()){
+                resetSearch();
+            }
         } else {
             super.onBackPressed();
         }
@@ -139,7 +142,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     @Override
     protected void onResume() {
         super.onResume();
-
         showProgressBar();
         beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
     }
@@ -153,10 +155,12 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        if (item.getItemId() == R.id.menu_sort_descending) {
-            sortStoredBeersByABV(DESCENDING);
-        } else {
-            sortStoredBeersByABV(ASCENDING);
+        if (item.getItemId() == R.id.menu_sort_ascending) {
+            beers.clear();
+            showBeers(sortStoredBeersByABV(ASCENDING));
+        } else if (item.getItemId() == R.id.menu_sort_descending) {
+            beers.clear();
+            showBeers(sortStoredBeersByABV(DESCENDING));
         }
         return true;
     }
@@ -167,46 +171,13 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      * @param food the string as key to search object
      */
     private void searchInDBorAPI(final String food) {
-
         if (isSearchStoredInDB(food)) {
-            restoreSearchFromDB(food);
+            beers.clear();
+            showBeers(restoreSearchFromDB(food));
         } else {
             beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
         }
 
-    }
-
-    /**
-     * Retrieve the object stores in db by the key
-     *
-     * @param food the string as key to search object
-     */
-    private void restoreSearchFromDB(final String food) {
-        final Realm realm = Realm.getDefaultInstance();
-        SearchDTO search = realm.where(SearchDTO.class)
-                .equalTo("key", food)
-                .findFirst();
-
-        beers.clear();
-
-        ArrayList<BeerDTO> restoredBeers = new ArrayList<>();
-        restoredBeers.addAll(search.getBeers());
-        showBeers(restoredBeers);
-
-    }
-
-    /**
-     * Search by key if object was stored in db or not
-     *
-     * @param food the string as key to search object
-     */
-    private boolean isSearchStoredInDB(final String food) {
-        final Realm realm = Realm.getDefaultInstance();
-        SearchDTO search = realm.where(SearchDTO.class)
-                .equalTo("key", food)
-                .findFirst();
-
-        return search != null;
     }
 
     /**
@@ -217,7 +188,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      */
     private String getFoodFormatted(String food) {
         final String formattedFood;
-        formattedFood = food.trim().replace(" ", "_");
+        formattedFood = food.trim().replace(SPACE, UNDERSCORE);
         return formattedFood.toLowerCase();
     }
 
@@ -246,9 +217,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         recyclerView.setVisibility(View.VISIBLE);
         hideKeyboard();
         llErrorEmptyView.setVisibility(View.GONE);
-
         sortBeersAscending(beersResult);
-
         showBeers(beersResult);
     }
 
@@ -273,7 +242,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         deleteAllFromRealm();
 
         if (food != null) {
-            storeBeersByKey(beersResult);
+            storeBeersByKey(beersResult, food);
         } else {
             storeBeers(beersResult);
         }
@@ -327,6 +296,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         hideKeyboard();
         showProgressBar();
         beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
+        recyclerView.addOnScrollListener(listener);
     }
 
     /**
@@ -341,89 +311,5 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 return Float.compare(beer1.getAbv(), beer2.getAbv());
             }
         });
-    }
-
-    /**
-     * Delete all stored beers in db
-     */
-    private void deleteAllFromRealm() {
-
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.delete(BeerDTO.class);
-            }
-        });
-    }
-
-    /**
-     * Sort the stored beers by param (ascending/descending)
-     *
-     * @param order the order to sort
-     */
-    private void sortStoredBeersByABV(final String order) {
-
-        Sort realmOrder;
-        if (ASCENDING.equalsIgnoreCase(order)) {
-            realmOrder = Sort.ASCENDING;
-        } else {
-            realmOrder = Sort.DESCENDING;
-        }
-
-        final Realm realm = Realm.getDefaultInstance();
-        RealmResults<BeerDTO> beersSorted = realm.where(BeerDTO.class)
-                .sort("abv", realmOrder)
-                .findAll();
-
-        final ArrayList<BeerDTO> beersList = new ArrayList<>();
-
-        beers.clear();
-        beersList.addAll(realm.copyFromRealm(beersSorted));
-
-        showBeers(beersList);
-
-        realm.close();
-    }
-
-    /**
-     * Store beers in db
-     *
-     * @param beersList the beers to store
-     */
-    public void storeBeers(final ArrayList<BeerDTO> beersList) {
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    RealmList<BeerDTO> beersListToStore = new RealmList<>();
-                    beersListToStore.addAll(beersList);
-                    realm.insertOrUpdate(beersListToStore);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("Realm error", e.getMessage());
-        }
-    }
-
-    /**
-     * Store searched object (key/beers)
-     *
-     * @param beersList the beers to store
-     */
-    public void storeBeersByKey(final ArrayList<BeerDTO> beersList) {
-        try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    RealmList<BeerDTO> beersListToStore = new RealmList<>();
-                    beersListToStore.addAll(beersList);
-                    SearchDTO searchObject = new SearchDTO(food, beersListToStore);
-                    realm.insertOrUpdate(searchObject);
-                }
-            });
-        } catch (Exception e) {
-            Log.d("Realm error", e.getMessage());
-        }
     }
 }

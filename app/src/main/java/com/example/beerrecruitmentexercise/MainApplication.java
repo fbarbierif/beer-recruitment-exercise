@@ -4,8 +4,7 @@ import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.initializeRealm;
 
 public class MainApplication extends Application {
 
@@ -17,11 +16,6 @@ public class MainApplication extends Application {
         Fresco.initialize(this);
 
         //Initialize realm, used to store and retrieve data from device db.
-        Realm.init(this);
-        final RealmConfiguration config = new RealmConfiguration
-                .Builder()
-                .deleteRealmIfMigrationNeeded()
-                .build();
-        Realm.setDefaultConfiguration(config);
+        initializeRealm(this);
     }
 }
