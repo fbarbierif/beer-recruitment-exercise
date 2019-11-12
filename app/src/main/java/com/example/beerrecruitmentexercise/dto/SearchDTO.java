@@ -2,23 +2,25 @@ package com.example.beerrecruitmentexercise.dto;
 
 import io.realm.RealmList;
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 @RealmClass
 public class SearchDTO implements RealmModel {
 
+    @PrimaryKey
     private String key;
-    private RealmList<BeerDTO> beers = new RealmList<>();
+    BeerDTO beer;
 
     /**
      * Beer search result constructor
      *
      * @param key   the key of the search
-     * @param beers the list of beers
+     * @param beer the beer
      */
-    public SearchDTO(String key, RealmList<BeerDTO> beers) {
+    public SearchDTO(String key, BeerDTO beer) {
         this.key = key;
-        this.beers = beers;
+        this.beer = beer;
     }
 
     public SearchDTO() {
@@ -28,7 +30,17 @@ public class SearchDTO implements RealmModel {
         return key;
     }
 
-    public RealmList<BeerDTO> getBeers() {
-        return beers;
+    public BeerDTO getBeer() {
+        return beer;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setBeers(BeerDTO beer) {
+        this.beer = beer;
     }
 }
+
+

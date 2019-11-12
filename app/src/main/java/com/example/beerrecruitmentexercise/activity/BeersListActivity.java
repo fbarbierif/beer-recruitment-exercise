@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static com.example.beerrecruitmentexercise.utils.RealmUtils.deleteAllFromRealm;
+import static com.example.beerrecruitmentexercise.utils.RealmUtils.deleteFromRealmWithoutKey;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.isSearchStoredInDB;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.restoreSearchFromDB;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.sortStoredBeersByABV;
@@ -173,7 +173,13 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     private void searchInDBorAPI(final String food) {
         if (isSearchStoredInDB(food)) {
             beers.clear();
-            showBeers(restoreSearchFromDB(food));
+            ArrayList<BeerDTO> restoredBeers = restoreSearchFromDB(food);
+            if(restoredBeers == null || restoredBeers.isEmpty()){
+                showEmptyView();
+            } else  {
+                showBeers(restoredBeers);
+            }
+
         } else {
             beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
         }
@@ -239,7 +245,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         srLayout.setRefreshing(false);
         hideProgressBar();
 
-        deleteAllFromRealm();
+        deleteFromRealmWithoutKey();
 
         if (food != null) {
             storeBeersByKey(beersResult, food);
@@ -288,6 +294,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      * Reset search box and make request to show initial data
      */
     public void resetSearch() {
+        llErrorEmptyView.setVisibility(View.INVISIBLE);
         ivClear.setVisibility(View.INVISIBLE);
         food = null;
         beers.clear();

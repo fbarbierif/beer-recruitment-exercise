@@ -9,6 +9,7 @@ import io.realm.annotations.RealmClass;
 @RealmClass
 public class BeerDTO implements RealmModel {
 
+    private String key = "";
     private int id;
     private String name;
     private String tagline;
@@ -43,6 +44,7 @@ public class BeerDTO implements RealmModel {
     /**
      * Beer constructor
      *
+     * @param key              the beer key
      * @param id               the beer id
      * @param name             the beer name
      * @param tagline          the beer tagline
@@ -65,11 +67,12 @@ public class BeerDTO implements RealmModel {
      * @param brewersTips      the brewer tips
      * @param contributedBy    the contribution to the beer
      */
-    public BeerDTO(int id, String name, String tagline, String firstBrewed, String description,
+    public BeerDTO(String key, int id, String name, String tagline, String firstBrewed, String description,
                    String imageUrl, float abv, float ibu, float targetFg, float targetOg, float ebc,
                    float srm, float ph, float attenuationLevel, ValueUnitDTO volume,
                    ValueUnitDTO boilVolume, MethodDTO method, IngredientsDTO ingredients,
                    RealmList<String> foodPairing, String brewersTips, String contributedBy) {
+        this.key = key;
         this.id = id;
         this.name = name;
         this.tagline = tagline;
@@ -94,6 +97,10 @@ public class BeerDTO implements RealmModel {
     }
 
     public BeerDTO() {
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public int getId() {
@@ -178,5 +185,9 @@ public class BeerDTO implements RealmModel {
 
     public String getContributedBy() {
         return contributedBy;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
