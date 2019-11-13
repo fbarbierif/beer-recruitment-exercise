@@ -1,6 +1,5 @@
 package com.example.beerrecruitmentexercise.dto;
 
-import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
@@ -15,7 +14,7 @@ public class SearchDTO implements RealmModel {
     /**
      * Beer search result constructor
      *
-     * @param key   the key of the search
+     * @param key  the key of the search
      * @param beer the beer
      */
     public SearchDTO(String key, BeerDTO beer) {

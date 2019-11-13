@@ -58,15 +58,14 @@ public abstract class RealmUtils {
     }
 
     /**
-     *
      * Store searched object (key/beers)
      *
      * @param beersList the beers to store
-     * @param food the food to use as key
+     * @param food      the food to use as key
      */
     public static void storeBeers(final ArrayList<BeerDTO> beersList, final String food) {
-        if(food != null){
-            for (BeerDTO beer: beersList){
+        if (food != null) {
+            for (BeerDTO beer : beersList) {
                 beer.setKey(food);
             }
         }

@@ -121,7 +121,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     @Override
     public void onBackPressed() {
         if (food != null) {
-            if(!food.isEmpty()){
+            if (!food.isEmpty()) {
                 resetSearch();
             }
         } else {
@@ -164,9 +164,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         if (isSearchStoredInDB(food)) {
             beers.clear();
             ArrayList<BeerDTO> restoredBeers = restoreSearchFromDB(food);
-            if(restoredBeers == null || restoredBeers.isEmpty()){
+            if (restoredBeers == null || restoredBeers.isEmpty()) {
                 showEmptyView();
-            } else  {
+            } else {
                 showBeers(restoredBeers, ASCENDING);
             }
 
@@ -226,7 +226,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         beers.clear();
         beers.addAll(beersResult);
 
-        if(sort != null && !sort.isEmpty()){
+        if (sort != null && !sort.isEmpty()) {
             sortBeers(sort);
         }
 
