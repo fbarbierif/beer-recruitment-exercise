@@ -47,6 +47,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     ImageView ivClear;
     ArrayList<BeerDTO> beers = new ArrayList<>();
     String food = null;
+    LinearLayoutManager layoutManager;
 
     private static final int FIRST_PAGE = 1;
     public static final String EMPTY = "";
@@ -70,7 +71,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
         recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         beersPresenter = new BeersPresenter(this);
@@ -146,11 +147,11 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.menu_sort_ascending) {
             sortBeers(ASCENDING);
-            beersAdapter.notifyDataSetChanged();
         } else if (item.getItemId() == R.id.menu_sort_descending) {
             sortBeers(DESCENDING);
-            beersAdapter.notifyDataSetChanged();
         }
+        beersAdapter.notifyDataSetChanged();
+        layoutManager.scrollToPositionWithOffset(0, 0);
         return true;
     }
 
@@ -220,7 +221,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      * @param beersResult the data to display
      */
     private void showBeers(ArrayList<BeerDTO> beersResult, final String sort) {
-
         beers.clear();
         beers.addAll(beersResult);
 
@@ -285,6 +285,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      * Reset search box and make request to show initial data
      */
     public void resetSearch() {
+        layoutManager.scrollToPositionWithOffset(0, 0);
         llErrorEmptyView.setVisibility(View.INVISIBLE);
         ivClear.setVisibility(View.INVISIBLE);
         food = null;
