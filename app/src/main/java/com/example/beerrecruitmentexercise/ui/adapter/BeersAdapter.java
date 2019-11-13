@@ -1,4 +1,4 @@
-package com.example.beerrecruitmentexercise.adapter;
+package com.example.beerrecruitmentexercise.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;

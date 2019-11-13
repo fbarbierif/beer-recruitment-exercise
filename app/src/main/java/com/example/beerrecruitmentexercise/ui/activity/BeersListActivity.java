@@ -1,4 +1,4 @@
-package com.example.beerrecruitmentexercise.activity;
+package com.example.beerrecruitmentexercise.ui.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.beerrecruitmentexercise.R;
-import com.example.beerrecruitmentexercise.adapter.BeersAdapter;
+import com.example.beerrecruitmentexercise.ui.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.dto.BeerDTO;
 import com.example.beerrecruitmentexercise.presenter.BeersPresenter;
 import com.example.beerrecruitmentexercise.view.BeersView;
