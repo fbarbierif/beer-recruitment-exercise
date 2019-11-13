@@ -78,7 +78,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                resetSearch();
                 beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
             }
         });
