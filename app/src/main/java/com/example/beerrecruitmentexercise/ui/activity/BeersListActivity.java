@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.beerrecruitmentexercise.R;
-import com.example.beerrecruitmentexercise.ui.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.dto.BeerDTO;
 import com.example.beerrecruitmentexercise.presenter.BeersPresenter;
+import com.example.beerrecruitmentexercise.ui.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.utils.EndlessRecyclerViewScrollListener;
 import com.example.beerrecruitmentexercise.view.BeersView;
 
@@ -56,42 +56,16 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beers_list);
 
-        progressBar = findViewById(R.id.progressBar);
-        recyclerView = findViewById(R.id.rvBeers);
-        etSearch = findViewById(R.id.etSearch);
-        ivClear = findViewById(R.id.ivClear);
-        llErrorEmptyView = findViewById(R.id.llErrorEmptyView);
-        tvMessage = findViewById(R.id.tvMessage);
-        srLayout = findViewById(R.id.swipeRefreshLt);
+        findViewsById();
 
-        recyclerView.setHasFixedSize(true);
+        setupRecyclerView();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        setupSearch();
 
         beersPresenter = new BeersPresenter(this);
+    }
 
-        listener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(final int page, final int totalItemsCount,
-                                   final RecyclerView recyclerView) {
-                if (food == null) {
-                    beersPresenter.getBeersData(String.valueOf(page), food);
-                }
-            }
-        };
-
-        recyclerView.addOnScrollListener(listener);
-
-        srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                beers.clear();
-                beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
-                recyclerView.addOnScrollListener(listener);
-            }
-        });
-
+    private void setupSearch() {
         etSearch.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -114,6 +88,44 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 resetSearch();
             }
         });
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        listener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(final int page, final int totalItemsCount,
+                                   final RecyclerView recyclerView) {
+                if (food == null) {
+                    beersPresenter.getBeersData(String.valueOf(page), food);
+                }
+            }
+        };
+
+        recyclerView.addOnScrollListener(listener);
+
+        srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                beers.clear();
+                beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
+                recyclerView.addOnScrollListener(listener);
+            }
+        });
+    }
+
+    private void findViewsById() {
+        progressBar = findViewById(R.id.progressBar);
+        recyclerView = findViewById(R.id.rvBeers);
+        etSearch = findViewById(R.id.etSearch);
+        ivClear = findViewById(R.id.ivClear);
+        llErrorEmptyView = findViewById(R.id.llErrorEmptyView);
+        tvMessage = findViewById(R.id.tvMessage);
+        srLayout = findViewById(R.id.swipeRefreshLt);
     }
 
     /**
