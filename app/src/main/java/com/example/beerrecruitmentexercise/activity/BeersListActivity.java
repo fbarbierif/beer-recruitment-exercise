@@ -152,23 +152,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        final MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if (item.getItemId() == R.id.menu_sort_ascending) {
-            showBeers(beers, ASCENDING);
-        } else if (item.getItemId() == R.id.menu_sort_descending) {
-            showBeers(beers, DESCENDING);
-        }
-        return true;
-    }
-
     /**
      * Search by key if object was stored in db and get it or make api call if necesary
      *
@@ -181,7 +164,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
             if(restoredBeers == null || restoredBeers.isEmpty()){
                 showEmptyView();
             } else  {
-                showBeers(restoredBeers, EMPTY);
+                showBeers(restoredBeers);
             }
 
         } else {
@@ -227,7 +210,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         recyclerView.setVisibility(View.VISIBLE);
         hideKeyboard();
         llErrorEmptyView.setVisibility(View.GONE);
-        showBeers(beersResult, ASCENDING);
+        showBeers(beersResult);
     }
 
     /**
@@ -235,14 +218,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      *
      * @param beersResult the data to display
      */
-    private void showBeers(ArrayList<BeerDTO> beersResult, final String sort) {
-        if(sort != null && !sort.isEmpty()){
-            //beers.clear();
-            beers.addAll(beersResult);
-            sortBeers(sort);
-        } else{
-            beers.addAll(beersResult);
-        }
+    private void showBeers(ArrayList<BeerDTO> beersResult) {
+
+        beers.addAll(beersResult);
 
         if (beersAdapter == null) {
             beersAdapter = new BeersAdapter(beers);
@@ -315,27 +293,4 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         recyclerView.addOnScrollListener(listener);
     }
 
-    /**
-     * Sort initial beers data ascending
-     *
-     * @param order the order to sort
-     */
-    private void sortBeers(String order) {
-        if (ASCENDING.equalsIgnoreCase(order)) {
-            Collections.sort(beers, new Comparator<BeerDTO>() {
-                @Override
-                public int compare(BeerDTO beer1, BeerDTO beer2) {
-                    return Float.compare(beer1.getAbv(), beer2.getAbv());
-                }
-            });
-        } else if (DESCENDING.equalsIgnoreCase(order)) {
-            Collections.sort(beers, new Comparator<BeerDTO>() {
-                @Override
-                public int compare(BeerDTO beer1, BeerDTO beer2) {
-                    return Float.compare(beer2.getAbv(), beer1.getAbv());
-                }
-            });
-        }
-
-    }
 }
