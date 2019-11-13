@@ -3,7 +3,7 @@ package com.example.beerrecruitmentexercise.model;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import com.example.beerrecruitmentexercise.activity.BeersListActivity;
+import com.example.beerrecruitmentexercise.ui.activity.BeersListActivity;
 import com.example.beerrecruitmentexercise.dto.BeerDTO;
 
 import org.junit.Before;

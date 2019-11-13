@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.beerrecruitmentexercise.R;
+import com.example.beerrecruitmentexercise.ui.activity.BeersListActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
