@@ -54,8 +54,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     public static final String EMPTY = "";
     public static final String SPACE = " ";
     public static final String UNDERSCORE = "_";
-    public static final String ASCENDING = "ascending";
-    public static final String DESCENDING = "descending";
 
 
     @Override
@@ -93,7 +91,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                resetSearch();
+                beers.clear();
                 beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
                 recyclerView.addOnScrollListener(listener);
             }
