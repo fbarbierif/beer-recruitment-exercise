@@ -23,7 +23,6 @@ import com.example.beerrecruitmentexercise.R;
 import com.example.beerrecruitmentexercise.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.dto.BeerDTO;
 import com.example.beerrecruitmentexercise.presenter.BeersPresenter;
-import com.example.beerrecruitmentexercise.utils.EndlessRecyclerViewScrollListener;
 import com.example.beerrecruitmentexercise.view.BeersView;
 
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     ImageView ivClear;
     ArrayList<BeerDTO> beers = new ArrayList<>();
     String food = null;
-    private EndlessRecyclerViewScrollListener listener;
 
     private static final int FIRST_PAGE = 1;
     public static final String EMPTY = "";
@@ -56,7 +54,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     public static final String UNDERSCORE = "_";
     public static final String ASCENDING = "ascending";
     public static final String DESCENDING = "descending";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,24 +75,11 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
         beersPresenter = new BeersPresenter(this);
 
-        listener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(final int page, final int totalItemsCount,
-                                   final RecyclerView recyclerView) {
-                if (food == null) {
-                    beersPresenter.getBeersData(String.valueOf(page), food);
-                }
-            }
-        };
-
-        recyclerView.addOnScrollListener(listener);
-
         srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 resetSearch();
                 beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
-                recyclerView.addOnScrollListener(listener);
             }
         });
 
@@ -162,9 +146,11 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.menu_sort_ascending) {
-            showBeers(beers, ASCENDING);
+            sortBeers(ASCENDING);
+            beersAdapter.notifyDataSetChanged();
         } else if (item.getItemId() == R.id.menu_sort_descending) {
-            showBeers(beers, DESCENDING);
+            sortBeers(DESCENDING);
+            beersAdapter.notifyDataSetChanged();
         }
         return true;
     }
@@ -181,7 +167,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
             if(restoredBeers == null || restoredBeers.isEmpty()){
                 showEmptyView();
             } else  {
-                showBeers(restoredBeers, EMPTY);
+                showBeers(restoredBeers, ASCENDING);
             }
 
         } else {
@@ -236,12 +222,12 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      * @param beersResult the data to display
      */
     private void showBeers(ArrayList<BeerDTO> beersResult, final String sort) {
+
+        beers.clear();
+        beers.addAll(beersResult);
+
         if(sort != null && !sort.isEmpty()){
-            //beers.clear();
-            beers.addAll(beersResult);
             sortBeers(sort);
-        } else{
-            beers.addAll(beersResult);
         }
 
         if (beersAdapter == null) {
@@ -258,8 +244,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
 
         if (food != null) {
             storeBeers(beersResult, food);
-        } else {
-            storeBeers(beersResult, null);
         }
     }
 
@@ -312,7 +296,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         hideKeyboard();
         showProgressBar();
         beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
-        recyclerView.addOnScrollListener(listener);
     }
 
     /**
