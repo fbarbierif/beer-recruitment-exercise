@@ -45,6 +45,7 @@ class BeersListActivity : AppCompatActivity(), BeersView {
     private lateinit var ivClear: ImageView
     private var beers = ArrayList<BeerDTO>()
     private var food: String? = null
+    private lateinit var layoutManager: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +61,7 @@ class BeersListActivity : AppCompatActivity(), BeersView {
 
         recyclerView.setHasFixedSize(true)
 
-        val layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
         beersPresenter = BeersPresenter(this)
@@ -118,11 +119,12 @@ class BeersListActivity : AppCompatActivity(), BeersView {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_sort_ascending) {
             sortBeers(ASCENDING)
-            beersAdapter!!.notifyDataSetChanged()
+
         } else if (item.itemId == R.id.menu_sort_descending) {
             sortBeers(DESCENDING)
-            beersAdapter!!.notifyDataSetChanged()
         }
+        beersAdapter!!.notifyDataSetChanged()
+        layoutManager.scrollToPosition(0)
         return true
     }
 
@@ -187,7 +189,6 @@ class BeersListActivity : AppCompatActivity(), BeersView {
      * @param beersResult the data to display
      */
     private fun showBeers(beersResult: ArrayList<BeerDTO>, sort: String?) {
-
         beers.clear()
         beers.addAll(beersResult)
 
@@ -248,6 +249,7 @@ class BeersListActivity : AppCompatActivity(), BeersView {
      * Reset search box and make request to show initial data
      */
     private fun resetSearch() {
+        layoutManager.scrollToPosition(0)
         llErrorEmptyView!!.visibility = View.INVISIBLE
         ivClear.visibility = View.INVISIBLE
         food = null
