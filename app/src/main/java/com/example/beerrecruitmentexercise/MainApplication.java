@@ -2,9 +2,8 @@ package com.example.beerrecruitmentexercise;
 
 import android.app.Application;
 
+import com.example.beerrecruitmentexercise.utils.RealmUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
-
-import static com.example.beerrecruitmentexercise.utils.RealmUtils.initializeRealm;
 
 public class MainApplication extends Application {
 
@@ -16,6 +15,6 @@ public class MainApplication extends Application {
         Fresco.initialize(this);
 
         //Initialize realm, used to store and retrieve data from device db.
-        initializeRealm(this);
+        RealmUtils.INSTANCE.initializeRealm(this);
     }
 }
