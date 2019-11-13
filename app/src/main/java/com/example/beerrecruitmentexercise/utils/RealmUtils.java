@@ -10,13 +10,9 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 public abstract class RealmUtils {
 
-    private static final String ASCENDING = "ascending";
-    private static final String DESCENDING = "descending";
-    private static final String ABV = "abv";
     private static final String KEY = "key";
 
     /**
@@ -62,61 +58,17 @@ public abstract class RealmUtils {
     }
 
     /**
-     * Sort the stored beers by param (ascending/descending)
      *
-     * @param order the order to sort
-     * @return the beers sorted
-     */
-    public static ArrayList<BeerDTO> sortStoredBeersByABV(final String order) {
-        Sort realmOrder = null;
-        if (ASCENDING.equalsIgnoreCase(order)) {
-            realmOrder = Sort.ASCENDING;
-        } else if (DESCENDING.equalsIgnoreCase(order)) {
-            realmOrder = Sort.DESCENDING;
-        }
-
-        final Realm realm = Realm.getDefaultInstance();
-        RealmResults<BeerDTO> beersSorted = null;
-        if (realmOrder != null) {
-            beersSorted = realm.where(BeerDTO.class)
-                    .sort(ABV, realmOrder)
-                    .findAll();
-        }
-
-        final ArrayList<BeerDTO> beersList = new ArrayList<>();
-        beersList.addAll(realm.copyFromRealm(beersSorted));
-
-        realm.close();
-
-        return beersList;
-    }
-
-    /**
-     * Store beers in db
-     *
-     * @param beersList the beers to store
-     */
-    public static void storeBeers(final ArrayList<BeerDTO> beersList) {
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmList<BeerDTO> beersListToStore = new RealmList<>();
-                beersListToStore.addAll(beersList);
-                realm.insertOrUpdate(beersListToStore);
-            }
-        });
-        realm.close();
-    }
-
-    /**
      * Store searched object (key/beers)
      *
      * @param beersList the beers to store
+     * @param food the food to use as key
      */
-    public static void storeBeersByKey(final ArrayList<BeerDTO> beersList, final String food) {
-        for (BeerDTO beer: beersList){
-            beer.setKey(food);
+    public static void storeBeers(final ArrayList<BeerDTO> beersList, final String food) {
+        if(food != null){
+            for (BeerDTO beer: beersList){
+                beer.setKey(food);
+            }
         }
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {

@@ -33,9 +33,7 @@ import java.util.Comparator;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.deleteFromRealmWithoutKey;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.isSearchStoredInDB;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.restoreSearchFromDB;
-import static com.example.beerrecruitmentexercise.utils.RealmUtils.sortStoredBeersByABV;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.storeBeers;
-import static com.example.beerrecruitmentexercise.utils.RealmUtils.storeBeersByKey;
 
 public class BeersListActivity extends AppCompatActivity implements BeersView {
 
@@ -48,7 +46,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     private SwipeRefreshLayout srLayout;
     EditText etSearch;
     ImageView ivClear;
-    final ArrayList<BeerDTO> beers = new ArrayList<>();
+    ArrayList<BeerDTO> beers = new ArrayList<>();
     String food = null;
     private EndlessRecyclerViewScrollListener listener;
 
@@ -108,10 +106,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     food = getFoodFormatted(etSearch.getText().toString());
                     if (!food.isEmpty()) {
-                        beers.clear();
-                        ivClear.setVisibility(View.VISIBLE);
-                        food = getFoodFormatted(etSearch.getText().toString());
-                        searchInDBorAPI(food);
+                        executeSearch();
                     }
                     hideKeyboard();
                     return true;
@@ -126,6 +121,17 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 resetSearch();
             }
         });
+    }
+
+    /**
+     * Execute the search
+     */
+    private void executeSearch() {
+        showProgressBar();
+        beers.clear();
+        ivClear.setVisibility(View.VISIBLE);
+        food = getFoodFormatted(etSearch.getText().toString());
+        searchInDBorAPI(food);
     }
 
     @Override
@@ -156,11 +162,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.menu_sort_ascending) {
-            beers.clear();
-            showBeers(sortStoredBeersByABV(ASCENDING));
+            showBeers(beers, ASCENDING);
         } else if (item.getItemId() == R.id.menu_sort_descending) {
-            beers.clear();
-            showBeers(sortStoredBeersByABV(DESCENDING));
+            showBeers(beers, DESCENDING);
         }
         return true;
     }
@@ -177,7 +181,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
             if(restoredBeers == null || restoredBeers.isEmpty()){
                 showEmptyView();
             } else  {
-                showBeers(restoredBeers);
+                showBeers(restoredBeers, EMPTY);
             }
 
         } else {
@@ -223,8 +227,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         recyclerView.setVisibility(View.VISIBLE);
         hideKeyboard();
         llErrorEmptyView.setVisibility(View.GONE);
-        sortBeersAscending(beersResult);
-        showBeers(beersResult);
+        showBeers(beersResult, ASCENDING);
     }
 
     /**
@@ -232,8 +235,14 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
      *
      * @param beersResult the data to display
      */
-    private void showBeers(ArrayList<BeerDTO> beersResult) {
-        beers.addAll(beersResult);
+    private void showBeers(ArrayList<BeerDTO> beersResult, final String sort) {
+        if(sort != null && !sort.isEmpty()){
+            //beers.clear();
+            beers.addAll(beersResult);
+            sortBeers(sort);
+        } else{
+            beers.addAll(beersResult);
+        }
 
         if (beersAdapter == null) {
             beersAdapter = new BeersAdapter(beers);
@@ -248,9 +257,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         deleteFromRealmWithoutKey();
 
         if (food != null) {
-            storeBeersByKey(beersResult, food);
+            storeBeers(beersResult, food);
         } else {
-            storeBeers(beersResult);
+            storeBeers(beersResult, null);
         }
     }
 
@@ -309,14 +318,24 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     /**
      * Sort initial beers data ascending
      *
-     * @param beersResult the beers to order
+     * @param order the order to sort
      */
-    private void sortBeersAscending(ArrayList<BeerDTO> beersResult) {
-        Collections.sort(beersResult, new Comparator<BeerDTO>() {
-            @Override
-            public int compare(BeerDTO beer1, BeerDTO beer2) {
-                return Float.compare(beer1.getAbv(), beer2.getAbv());
-            }
-        });
+    private void sortBeers(String order) {
+        if (ASCENDING.equalsIgnoreCase(order)) {
+            Collections.sort(beers, new Comparator<BeerDTO>() {
+                @Override
+                public int compare(BeerDTO beer1, BeerDTO beer2) {
+                    return Float.compare(beer1.getAbv(), beer2.getAbv());
+                }
+            });
+        } else if (DESCENDING.equalsIgnoreCase(order)) {
+            Collections.sort(beers, new Comparator<BeerDTO>() {
+                @Override
+                public int compare(BeerDTO beer1, BeerDTO beer2) {
+                    return Float.compare(beer2.getAbv(), beer1.getAbv());
+                }
+            });
+        }
+
     }
 }
