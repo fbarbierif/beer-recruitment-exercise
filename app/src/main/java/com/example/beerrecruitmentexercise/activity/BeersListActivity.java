@@ -212,7 +212,6 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     public void sortAndShowBeersData(ArrayList<BeerDTO> beersResult) {
         recyclerView.setVisibility(View.VISIBLE);
         hideKeyboard();
-        llErrorEmptyView.setVisibility(View.GONE);
         showBeers(beersResult, ASCENDING);
     }
 
