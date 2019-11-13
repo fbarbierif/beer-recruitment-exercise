@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.beerrecruitmentexercise.R;
-import com.example.beerrecruitmentexercise.ui.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.dto.BeerDTO;
 import com.example.beerrecruitmentexercise.presenter.BeersPresenter;
+import com.example.beerrecruitmentexercise.ui.adapter.BeersAdapter;
 import com.example.beerrecruitmentexercise.view.BeersView;
 
 import java.util.ArrayList;
@@ -61,28 +61,17 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beers_list);
 
-        progressBar = findViewById(R.id.progressBar);
-        recyclerView = findViewById(R.id.rvBeers);
-        etSearch = findViewById(R.id.etSearch);
-        ivClear = findViewById(R.id.ivClear);
-        llErrorEmptyView = findViewById(R.id.llErrorEmptyView);
-        tvMessage = findViewById(R.id.tvMessage);
-        srLayout = findViewById(R.id.swipeRefreshLt);
+        findViewsById();
 
-        recyclerView.setHasFixedSize(true);
+        setupRecyclerView();
 
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        setupSearch();
 
         beersPresenter = new BeersPresenter(this);
 
-        srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
-            }
-        });
+    }
 
+    private void setupSearch() {
         etSearch.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -105,6 +94,29 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 resetSearch();
             }
         });
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                beersPresenter.getBeersData(String.valueOf(FIRST_PAGE), food);
+            }
+        });
+    }
+
+    private void findViewsById() {
+        progressBar = findViewById(R.id.progressBar);
+        recyclerView = findViewById(R.id.rvBeers);
+        etSearch = findViewById(R.id.etSearch);
+        ivClear = findViewById(R.id.ivClear);
+        llErrorEmptyView = findViewById(R.id.llErrorEmptyView);
+        tvMessage = findViewById(R.id.tvMessage);
+        srLayout = findViewById(R.id.swipeRefreshLt);
     }
 
     /**
@@ -318,6 +330,5 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
                 }
             });
         }
-
     }
 }
