@@ -7,30 +7,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-
 import com.example.beerrecruitmentexercise.R
-import com.example.beerrecruitmentexercise.ui.adapter.BeersAdapter
 import com.example.beerrecruitmentexercise.dto.BeerDTO
 import com.example.beerrecruitmentexercise.presenter.BeersPresenter
-import com.example.beerrecruitmentexercise.view.BeersView
-
-import java.util.ArrayList
-import java.util.Comparator
-
+import com.example.beerrecruitmentexercise.ui.adapter.BeersAdapter
 import com.example.beerrecruitmentexercise.utils.RealmUtils.deleteFromRealmWithoutKey
 import com.example.beerrecruitmentexercise.utils.RealmUtils.isSearchStoredInDB
 import com.example.beerrecruitmentexercise.utils.RealmUtils.restoreSearchFromDB
 import com.example.beerrecruitmentexercise.utils.RealmUtils.storeBeers
+import com.example.beerrecruitmentexercise.view.BeersView
+import java.util.*
 
 class BeersListActivity : AppCompatActivity(), BeersView {
 
@@ -51,23 +42,17 @@ class BeersListActivity : AppCompatActivity(), BeersView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_beers_list)
 
-        progressBar = findViewById(R.id.progressBar)
-        recyclerView = findViewById(R.id.rvBeers)
-        etSearch = findViewById(R.id.etSearch)
-        ivClear = findViewById(R.id.ivClear)
-        llErrorEmptyView = findViewById(R.id.llErrorEmptyView)
-        tvMessage = findViewById(R.id.tvMessage)
-        srLayout = findViewById(R.id.swipeRefreshLt)
+        findViewsById()
 
-        recyclerView.setHasFixedSize(true)
+        setupRecyclerView()
 
-        layoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        setupSearch()
 
         beersPresenter = BeersPresenter(this)
 
-        srLayout!!.setOnRefreshListener { beersPresenter!!.getBeersData(FIRST_PAGE.toString(), food) }
+    }
 
+    private fun setupSearch() {
         etSearch.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 food = getFoodFormatted(etSearch.text.toString())
@@ -81,6 +66,25 @@ class BeersListActivity : AppCompatActivity(), BeersView {
         })
 
         ivClear.setOnClickListener { resetSearch() }
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView.setHasFixedSize(true)
+
+        layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
+
+        srLayout!!.setOnRefreshListener { beersPresenter!!.getBeersData(FIRST_PAGE.toString(), food) }
+    }
+
+    private fun findViewsById() {
+        progressBar = findViewById(R.id.progressBar)
+        recyclerView = findViewById(R.id.rvBeers)
+        etSearch = findViewById(R.id.etSearch)
+        ivClear = findViewById(R.id.ivClear)
+        llErrorEmptyView = findViewById(R.id.llErrorEmptyView)
+        tvMessage = findViewById(R.id.tvMessage)
+        srLayout = findViewById(R.id.swipeRefreshLt)
     }
 
     /**
