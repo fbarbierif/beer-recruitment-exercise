@@ -3,9 +3,6 @@ package com.example.beerrecruitmentexercise.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -27,8 +24,6 @@ import com.example.beerrecruitmentexercise.utils.EndlessRecyclerViewScrollListen
 import com.example.beerrecruitmentexercise.view.BeersView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.deleteFromRealmWithoutKey;
 import static com.example.beerrecruitmentexercise.utils.RealmUtils.isSearchStoredInDB;
@@ -135,7 +130,7 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
     @Override
     public void onBackPressed() {
         if (food != null) {
-            if(!food.isEmpty()){
+            if (!food.isEmpty()) {
                 resetSearch();
             }
         } else {
@@ -159,9 +154,9 @@ public class BeersListActivity extends AppCompatActivity implements BeersView {
         if (isSearchStoredInDB(food)) {
             beers.clear();
             ArrayList<BeerDTO> restoredBeers = restoreSearchFromDB(food);
-            if(restoredBeers == null || restoredBeers.isEmpty()){
+            if (restoredBeers == null || restoredBeers.isEmpty()) {
                 showEmptyView();
-            } else  {
+            } else {
                 showBeers(restoredBeers);
             }
 
